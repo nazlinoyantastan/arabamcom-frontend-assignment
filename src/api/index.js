@@ -13,6 +13,6 @@ export default {
     return apiClient.get('/listing', { params });
   },
   getDetail(id) {
-    return apiClient.get(`/detail`, { params: { id } });
+    return apiClient.get('/detail', { params: { id } });
   },
 };

@@ -21,7 +21,7 @@
             <th>Kilometre</th>
             <th>Renk</th>
             <th class="price-header" @click="setSort('price')">Fiyat</th>
-            <th >Tarih</th>
+            <th @click="setSort('date')" class="date-header">Tarih</th>
             <th>İl / İlçe</th>
           </tr>
         </thead>
@@ -60,17 +60,19 @@
       };
     },
     computed: {
-        sortedAdverts() {
-    return this.adverts.slice().sort((a, b) => {
-      let comparison = 0;
-      if (this.sortType === 'price') {
-        comparison = this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price);
-      } else if (this.sortType === 'year') {
-        comparison = this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
+      sortedAdverts() {
+        return this.adverts.slice().sort((a, b) => {
+          let comparison = 0;
+          if (this.sortType === 'price') {
+            comparison = this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price);
+          } else if (this.sortType === 'year') {
+            comparison = this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
+          } else if (this.sortType === 'date') {
+            comparison = new Date(a.dateFormatted.split(' ').reverse().join('-')) - new Date(b.dateFormatted.split(' ').reverse().join('-'));
+          }
+          return this.sortOrder === 'asc' ? comparison : -comparison;
+        });
       }
-      return this.sortOrder === 'asc' ? comparison : -comparison;
-    });
-  }
     },
     methods: {
       fetchListings() {
@@ -81,10 +83,16 @@
           categoryId: this.filters.categoryId
         };
   
-        api.getListings(params)
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const apiUrl = 'http://sandbox.arabamd.com/api/v1/listing';
+  
+        api.get(proxyUrl + apiUrl, { params })
           .then(response => {
-            console.log('API yanıtı:', response.data); // API yanıtını konsolda yazdırma
-            this.adverts = response.data; // Eğer API yanıtı içinde "data" anahtarı varsa, "response.data.data" olarak değiştirin
+            console.log('API yanıtı:', response.data);
+            this.adverts = response.data.map(ad => {
+              ad.price = this.parseFormattedNumber(ad.priceFormatted);
+              return ad;
+            });
           })
           .catch(error => {
             console.error('İlanlar alınırken hata oluştu:', error);
@@ -114,21 +122,21 @@
         return property ? property.value : '';
       },
       getLocation(location) {
-    if (!location) {
-      return ''; // location null veya undefined ise boş string döndür
-    }
-    return `${location.cityName}\n${location.townName}`; // İl ve ilçe bilgilerini alt alta yaz
-  },
+        if (!location) {
+          return ''; // location null veya undefined ise boş string döndür
+        }
+        return `${location.cityName}\n${location.townName}`; // İl ve ilçe bilgilerini alt alta yaz
+      },
       formatNumber(value) {
-    if (!value) return '';
-    return new Intl.NumberFormat('tr-TR').format(value);
-  },
-  parseFormattedNumber(value) {
-    if (typeof value === 'string') {
-      return parseFloat(value.replace(/\./g, '').replace(',', '.'));
-    }
-    return value;
-  }
+        if (!value) return '';
+        return new Intl.NumberFormat('tr-TR').format(value);
+      },
+      parseFormattedNumber(value) {
+        if (typeof value === 'string') {
+          return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+        }
+        return value;
+      }
     },
     created() {
       this.fetchListings();
@@ -170,19 +178,17 @@
     vertical-align: middle; /* Dikeyde ortalama */
   }
   
-  .ad-table th.price-header {
-    width: 150px; /* Fiyat kutucuğunu genişletme */
+  .ad-table th.price-header, .ad-table th.year-header, .ad-table th.date-header {
     cursor: pointer; /* Başlıkların tıklanabilir olduğunu göstermek için */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .ad-table th.year-header {
-    cursor: pointer; /* Başlıkların tıklanabilir olduğunu göstermek için */
-  }
-  .ad-table th.year-header:hover {
+  
+  .ad-table th.price-header:hover, .ad-table th.year-header:hover, .ad-table th.date-header:hover {
     color: red;
   }
-  .ad-table th.price-header:hover {
-    color: red;
-  }
+  
   .ad-table th.left-align, .ad-table td.left-align {
     text-align: left; /* Satır başından başlama */
   }
@@ -214,9 +220,9 @@
     font-weight: bold;
     white-space: nowrap; /* Tek satırda gösterim */
   }
+  
   .location {
-  white-space: pre-line; /* İl ve ilçe bilgisini alt alta yazmak için */
-}
-
+    white-space: pre-line; /* İl ve ilçe bilgisini alt alta yazmak için */
+  }
   </style>
   
