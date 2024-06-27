@@ -18,7 +18,19 @@
           <tr>
             <th colspan="2" class="model-header">Model</th>
             <th>İlan Başlığı</th>
-            <th class="year-header" @click="setSort('year')">Yıl</th>
+            <th class="year-header" @click="setSort('year')">
+                <span>Yıl</span>
+                <!--< div class="multiple-icon-container">
+                    <svg class="icon chevron-up" id="sort-icon-for-year-asc" width="14" height="14">
+                        <use xlink:href="#arabam-list-chevron-down"></use>
+                    </svg>
+                    <svg class="chevron-down" id="sort-icon-for-year-desc" width="14" height="14">
+                        <use xlink:href="#arabam-list-chevron-down"></use>
+                    </svg>
+                </div> -->
+                
+
+            </th>
             <th>Kilometre</th>
             <th>Renk</th>
             <th class="price-header" @click="setSort('price')">Fiyat</th>
