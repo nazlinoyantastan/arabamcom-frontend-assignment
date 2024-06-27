@@ -11,5 +11,5 @@ export default {
 </script>
 
 <style>
-/* İstediğiniz stil düzenlemelerini buraya ekleyebilirsiniz */
+
 </style>
