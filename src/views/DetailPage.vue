@@ -31,8 +31,17 @@
       <div v-if="selectedTab === 'Açıklama'">
         <p v-html="advert.text"></p>
       </div>
+      <div v-if="selectedTab === 'Satıcı Bilgileri'">
+      <div class="seller-info">
+      <ul>
+        <li><strong>Ad:</strong> {{ advert.userInfo.nameSurname }}</li>
+        <li><strong>Telefon:</strong> {{ advert.userInfo.phoneFormatted }}</li>
+      </ul>
+    </div>
+    </div>
       <!-- Diğer sekmeler için içerikler buraya eklenecek -->
     </div>
+    
     <div v-if="fullscreenImage" class="fullscreen" @click="closeFullscreen">
       <img :src="fullscreenImage" />
     </div>
@@ -57,7 +66,7 @@ export default {
       advert: null,
       fullscreenImage: null,
       selectedTab: 'Açıklama',
-      tabs: ['Açıklama', 'Boya, Değişen ve Tramer', 'Araç Bilgileri', 'Donanım', 'Ekspertiz'],
+      tabs: ['Açıklama', 'Satıcı Bilgileri'],
     };
   },
   methods: {
@@ -148,6 +157,7 @@ export default {
   width: 90%;
   margin-top: 20px;
 }
+
 .fullscreen {
   position: fixed;
   top: 0;
@@ -163,5 +173,11 @@ export default {
 .fullscreen img {
   max-width: 90%;
   max-height: 90%;
+}
+.seller-info {
+  width: 90%;
+  margin-top: 20px;
+  margin-bottom: 100px;
+  padding-top: 20px;
 }
 </style>
