@@ -19,17 +19,7 @@
             <th colspan="2" class="model-header">Model</th>
             <th>İlan Başlığı</th>
             <th class="year-header" @click="setSort('year')">
-                <span>Yıl</span>
-                <!--< div class="multiple-icon-container">
-                    <svg class="icon chevron-up" id="sort-icon-for-year-asc" width="14" height="14">
-                        <use xlink:href="#arabam-list-chevron-down"></use>
-                    </svg>
-                    <svg class="chevron-down" id="sort-icon-for-year-desc" width="14" height="14">
-                        <use xlink:href="#arabam-list-chevron-down"></use>
-                    </svg>
-                </div> -->
-                
-
+                <span>Yıl</span>                    
             </th>
             <th>Kilometre</th>
             <th>Renk</th>
@@ -70,21 +60,24 @@ export default {
   },
   computed: {
     sortedAdverts() {
-      return this.adverts.slice().sort((a, b) => {
-        let comparison = 0;
-        if (this.sortType === 'date') {
-          const dateA = new Date(a.date.split('.').reverse().join('-'));
-          const dateB = new Date(b.date.split('.').reverse().join('-'));
-          comparison = dateA - dateB;
-        }
-         else if (this.sortType === 'price') {
-          comparison = this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price);
-        } else if (this.sortType === 'year') {
-          comparison = this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
-        } 
-        return this.sortOrder === 'asc' ? comparison : -comparison;
-      });
+    let sorted = this.adverts.slice();
+
+    switch (this.sortType) {
+      case 'date':
+        sorted.sort(this.sortByDate);
+        break;
+      case 'price':
+        sorted.sort(this.sortByPrice);
+        break;
+      case 'year':
+        sorted.sort(this.sortByYear);
+        break;
+      default:
+        break;
     }
+
+    return this.sortOrder === 'asc' ? sorted : sorted.reverse();
+  }
   },
   methods: {
     fetchListings() {
@@ -103,18 +96,18 @@ export default {
         });
     },
 
-   
-
     setSort(type) {
-      if (this.sortType === type) {
-        // Aynı sütuna tekrar tıklanırsa sıralama sırasını değiştir
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        // Farklı bir sütuna tıklanırsa sıralama türünü değiştir
-        this.sortType = type;
-        this.sortOrder = 'asc';
-      }
-    },
+    if (this.sortType === type) {
+      // Aynı sütuna tıklanırsa sıralama sırasını değiştir
+      this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc';
+    } else {
+      // Farklı bir sütuna tıklanırsa sıralama türünü değiştir ve varsayılan olarak artan sıralama yap
+      this.sortType = type;
+      this.sortOrder = 'asc';
+    }
+  },
+
+    
     goToDetail(id) {
       this.$router.push({ name: 'DetailPage', params: { id } });
     },
@@ -143,7 +136,19 @@ export default {
         return parseFloat(value.replace(/\./g, '').replace(',', '.'));
       }
       return value;
-    }
+    },
+    sortByDate(a, b) {
+    const dateA = new Date(a.date.split('.').reverse().join('-'));
+    const dateB = new Date(b.date.split('.').reverse().join('-'));
+    return dateA - dateB;
+  },
+  sortByPrice(a, b) {
+    return this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price);
+  },
+  sortByYear(a, b) {
+    return this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
+  }
+
   },
   created() {
     this.fetchListings();
@@ -153,7 +158,7 @@ export default {
 
 <style>
 .container {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f7f7f7 ;
@@ -165,7 +170,7 @@ export default {
 
 .filters {
   display: flex;
-  justify-content: space-between;
+  justify-content:center;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -191,8 +196,11 @@ export default {
 }
 
 .ad-table th.model-header {
+   
   text-align: center; /* Başlıkları ortalama */
 }
+
+
 
 .ad-table th.price-header {
   width: 150px; /* Fiyat kutucuğunu genişletme */
@@ -247,6 +255,7 @@ export default {
 .date {
   white-space: pre-line; 
 }
+
 
 
 </style>
