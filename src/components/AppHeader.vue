@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand" href="/">
-        <img src="/src/assets/Arabam.com_logo.png" alt="Arabam.com Logo" />
+        <img class="navbar-logo" src="@/assets/Arabam.com_logo.png" alt="Arabam.com Logo" />
       </a>
       <button
         class="navbar-toggler"
@@ -20,9 +20,7 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Anasayfa</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/">Vitrin</a>
-          </li>
+          
         </ul>
         <span class="navbar-text">
           2. El ve 0 Km Satılık Araç İlanları Platformu
@@ -31,37 +29,43 @@
     </div>
   </nav>
 </template>
-  
-  <script>
-  export default {
-    name: 'AppHeader'
-  }
-  </script>
-  
-  <style scoped>
-  header {
-    background-color: #ffffff;
-    
-    padding: 1rem;
-  }
-  
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  nav ul li {
-    display: inline;
-  }
-  
-  nav ul li a {
-    color: black;
-    text-decoration: none;
-  }
-  
-  nav ul li a:hover {
-    text-decoration: underline;
-  }
-  </style>
-  
+
+<script>
+export default {
+  name: 'AppHeader'
+}
+</script>
+
+<style scoped>
+header {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-bottom:  1px solid #ddd;
+}
+.navbar{
+  border-bottom:  1px solid #ddd;
+}
+.navbar-logo {
+  max-height: 50px; /* Logonun yüksekliğini belirleyin */
+  width: auto; /* Genişliğin otomatik ayarlanmasını sağlayın */
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav ul li a {
+  color: black;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+</style>

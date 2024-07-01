@@ -32,11 +32,7 @@
           <div>
             <label for="maxYear">Max Yıl:</label>
             <input type="number" id="maxYear" v-model.number="tempFilters.maxYear">
-          </div>
-          <div>
-            <label for="color">Renk:</label>
-            <input type="text" id="color" v-model="tempFilters.color">
-          </div>
+          </div>          
           <div>
             <label for="minDate">Min Tarih:</label>
             <input type="date" id="minDate" v-model="tempFilters.minDate">
@@ -98,7 +94,6 @@ export default {
         maxPrice: '',
         minYear: null,
         maxYear: null,
-        color: '',
         minDate: null,
         maxDate: null,
       },
@@ -107,7 +102,6 @@ export default {
         maxPrice: '',
         minYear: null,
         maxYear: null,
-        color: '',
         minDate: null,
         maxDate: null,
       },
@@ -119,7 +113,6 @@ export default {
       let filtered = this.adverts.filter(ad => {
         const price = this.parseFormattedNumber(ad.price);
         const year = parseInt(this.getProperty(ad.properties, 'year'));
-        const color = this.getProperty(ad.properties, 'color');
         const date = new Date(ad.date.split('.').reverse().join('-'));
 
         return (
@@ -127,7 +120,6 @@ export default {
           (!this.filters.maxPrice || price <= this.parseFormattedNumber(this.filters.maxPrice)) &&
           (!this.filters.minYear || year >= this.filters.minYear) &&
           (!this.filters.maxYear || year <= this.filters.maxYear) &&
-          (!this.filters.color || color.toLowerCase().includes(this.filters.color.toLowerCase())) &&
           (!this.filters.minDate || date >= new Date(this.filters.minDate)) &&
           (!this.filters.maxDate || date <= new Date(this.filters.maxDate))
         );
@@ -231,7 +223,6 @@ export default {
         maxPrice: '',
         minYear: null,
         maxYear: null,
-        color: '',
         minDate: null,
         maxDate: null,
       };
