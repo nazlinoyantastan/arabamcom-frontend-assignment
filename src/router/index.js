@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import ListingPage from '../views/ListingPage.vue';
 import DetailPage from '../views/DetailPage.vue';
 
+
+
 const routes = [
   {
     path: '/',
@@ -13,6 +15,7 @@ const routes = [
     name: 'DetailPage',
     component: DetailPage,
   },
+  
 ];
 
 const router = createRouter({

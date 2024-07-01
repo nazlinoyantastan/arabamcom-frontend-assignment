@@ -2,7 +2,6 @@
   <div class="container">
     <h1>Vitrin</h1>
 
-    <!-- İlan sayısını seçmek için dropdown -->
     <div class="filter">
       <label for="advertCount">İlan Sayısı:</label>
       <select id="advertCount" v-model="selectedCount" @change="fetchListings">
@@ -11,35 +10,44 @@
       </select>
     </div>
 
-    <!-- Filtreleme formu -->
-    <div class="filters">
-      <div>
-        <label for="minPrice">Min Fiyat:</label>
-        <input type="text" id="minPrice" :value="filters.minPrice" @input="formatPriceInput('minPrice', $event)">
-      </div>
-      <div>
-        <label for="maxPrice">Max Fiyat:</label>
-        <input type="text" id="maxPrice" :value="filters.maxPrice" @input="formatPriceInput('maxPrice', $event)">
-      </div>
-      <div>
-        <label for="minYear">Min Yıl:</label>
-        <input type="number" id="minYear" v-model.number="filters.minYear" @input="applyFilters">
-      </div>
-      <div>
-        <label for="maxYear">Max Yıl:</label>
-        <input type="number" id="maxYear" v-model.number="filters.maxYear" @input="applyFilters">
-      </div>
-      <div>
-        <label for="color">Renk:</label>
-        <input type="text" id="color" v-model="filters.color" @input="applyFilters">
-      </div>
-      <div>
-        <label for="minDate">Min Tarih:</label>
-        <input type="date" id="minDate" v-model="filters.minDate" @input="applyFilters">
-      </div>
-      <div>
-        <label for="maxDate">Max Tarih:</label>
-        <input type="date" id="maxDate" v-model="filters.maxDate" @input="applyFilters">
+    <button @click="showFilterModal = true" class="filter-button">Filtreler</button>
+
+    <div v-if="showFilterModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showFilterModal = false">&times;</span>
+        <h2>Filtreler</h2>
+        <div class="filters">
+          <div>
+            <label for="minPrice">Min Fiyat:</label>
+            <input type="text" id="minPrice" v-model="tempFilters.minPrice" @input="formatPrice('minPrice', $event)">
+          </div>
+          <div>
+            <label for="maxPrice">Max Fiyat:</label>
+            <input type="text" id="maxPrice" v-model="tempFilters.maxPrice" @input="formatPrice('maxPrice', $event)">
+          </div>
+          <div>
+            <label for="minYear">Min Yıl:</label>
+            <input type="number" id="minYear" v-model.number="tempFilters.minYear">
+          </div>
+          <div>
+            <label for="maxYear">Max Yıl:</label>
+            <input type="number" id="maxYear" v-model.number="tempFilters.maxYear">
+          </div>
+          <div>
+            <label for="color">Renk:</label>
+            <input type="text" id="color" v-model="tempFilters.color">
+          </div>
+          <div>
+            <label for="minDate">Min Tarih:</label>
+            <input type="date" id="minDate" v-model="tempFilters.minDate">
+          </div>
+          <div>
+            <label for="maxDate">Max Tarih:</label>
+            <input type="date" id="maxDate" v-model="tempFilters.maxDate">
+          </div>
+        </div>
+        <button @click="applyAndClose" class="apply-button">Onayla</button>
+        <button @click="clearFilters" class="clear-button">Filtreleri Temizle</button>
       </div>
     </div>
 
@@ -75,7 +83,6 @@
   </div>
 </template>
 
-  
 <script>
 import api from '../api';
 
@@ -95,6 +102,16 @@ export default {
         minDate: null,
         maxDate: null,
       },
+      tempFilters: {
+        minPrice: '',
+        maxPrice: '',
+        minYear: null,
+        maxYear: null,
+        color: '',
+        minDate: null,
+        maxDate: null,
+      },
+      showFilterModal: false, // Modal başlangıçta gizli
     };
   },
   computed: {
@@ -198,13 +215,27 @@ export default {
     sortByYear(a, b) {
       return this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
     },
-    formatPriceInput(field, event) {
-      let value = event.target.value;
-      // Remove all non-numeric characters
-      value = value.replace(/[^\d]/g, '');
-      // Add dots every three digits
-      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      this.filters[field] = value;
+    formatPrice(field, event) {
+      let value = event.target.value.replace(/[^\d]/g, ''); // Sadece rakamları al
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Üçüncü basamaktan sonra nokta ekle
+      this.tempFilters[field] = value;
+    },
+    applyAndClose() {
+      this.filters = { ...this.tempFilters };
+      this.applyFilters();
+      this.showFilterModal = false;
+    },
+    clearFilters() {
+      this.tempFilters = {
+        minPrice: '',
+        maxPrice: '',
+        minYear: null,
+        maxYear: null,
+        color: '',
+        minDate: null,
+        maxDate: null,
+      };
+      this.filters = { ...this.tempFilters };
       this.applyFilters();
     }
   },
@@ -212,10 +243,9 @@ export default {
     this.fetchListings();
   }
 };
-
 </script>
 
-<style>
+<style scoped>
 .container {
   max-width: 1500px;
   margin: 0 auto;
@@ -320,4 +350,65 @@ export default {
   white-space: pre-line;
 }
 
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000; /* Daha yüksek bir değer kullanarak diğer elementlerin üzerinde olmasını sağlayın */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.filter-button {
+  background-color: #4CAF50; /* Yeşil */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.apply-button, .clear-button {
+  background-color: #4CAF50; /* Yeşil */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
 </style>
