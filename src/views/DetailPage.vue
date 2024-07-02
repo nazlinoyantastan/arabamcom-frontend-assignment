@@ -103,7 +103,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import 'swiper/swiper-bundle.css';
 
 .detail-page {

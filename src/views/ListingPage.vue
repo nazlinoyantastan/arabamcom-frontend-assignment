@@ -1,105 +1,170 @@
 <template>
   <div class="container">
-    <h1>Vitrin</h1>
-
-    <div class="filter">
-      <label for="advertCount">İlan Sayısı:</label>
-      <select id="advertCount" v-model="selectedCount" @change="fetchListings">
-        <option value="20">20</option>
-        <option value="50">50</option>
-      </select>
+    <div class="title-container">
+      Satılık 2. El Araba Fiyatları ve Modelleri ({{
+        sortedAdverts.length
+      }}
+      Sonuç)
     </div>
 
-    <button @click="showFilterModal = true" class="filter-button">Filtreler</button>
+    <div class="sub-title">
+      <div class="filter">
+        <label for="advertCount">İlan Sayısı:</label>
+        <select
+          id="advertCount"
+          v-model="selectedCount"
+          @change="fetchListings"
+        >
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
 
-    <div v-if="showFilterModal" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="showFilterModal = false">&times;</span>
-        <h2>Filtreler</h2>
-        <div class="filters">
-          <div>
-            <label for="minPrice">Min Fiyat:</label>
-            <input type="text" id="minPrice" v-model="tempFilters.minPrice" @input="formatPrice('minPrice', $event)">
+      <button @click="showFilterModal = true" class="filter-button">
+        Filtreler
+      </button>
+
+      <div v-if="showFilterModal" class="modal">
+        <div class="modal-content">
+          <span class="close" @click="showFilterModal = false">&times;</span>
+          <h2>Filtreler</h2>
+          <div class="filters">
+            <div>
+              <label for="minPrice">Min Fiyat:</label>
+              <input
+                type="text"
+                id="minPrice"
+                v-model="tempFilters.minPrice"
+                @input="formatPrice('minPrice', $event)"
+              />
+            </div>
+            <div>
+              <label for="maxPrice">Max Fiyat:</label>
+              <input
+                type="text"
+                id="maxPrice"
+                v-model="tempFilters.maxPrice"
+                @input="formatPrice('maxPrice', $event)"
+              />
+            </div>
+            <div>
+              <label for="minYear">Min Yıl:</label>
+              <input
+                type="number"
+                id="minYear"
+                v-model.number="tempFilters.minYear"
+              />
+            </div>
+            <div>
+              <label for="maxYear">Max Yıl:</label>
+              <input
+                type="number"
+                id="maxYear"
+                v-model.number="tempFilters.maxYear"
+              />
+            </div>
+            <div>
+              <label for="minDate">Min Tarih:</label>
+              <input type="date" id="minDate" v-model="tempFilters.minDate" />
+            </div>
+            <div>
+              <label for="maxDate">Max Tarih:</label>
+              <input type="date" id="maxDate" v-model="tempFilters.maxDate" />
+            </div>
           </div>
-          <div>
-            <label for="maxPrice">Max Fiyat:</label>
-            <input type="text" id="maxPrice" v-model="tempFilters.maxPrice" @input="formatPrice('maxPrice', $event)">
-          </div>
-          <div>
-            <label for="minYear">Min Yıl:</label>
-            <input type="number" id="minYear" v-model.number="tempFilters.minYear">
-          </div>
-          <div>
-            <label for="maxYear">Max Yıl:</label>
-            <input type="number" id="maxYear" v-model.number="tempFilters.maxYear">
-          </div>          
-          <div>
-            <label for="minDate">Min Tarih:</label>
-            <input type="date" id="minDate" v-model="tempFilters.minDate">
-          </div>
-          <div>
-            <label for="maxDate">Max Tarih:</label>
-            <input type="date" id="maxDate" v-model="tempFilters.maxDate">
-          </div>
+          <button @click="applyAndClose" class="apply-button">Onayla</button>
+          <button @click="clearFilters" class="clear-button">
+            Filtreleri Temizle
+          </button>
         </div>
-        <button @click="applyAndClose" class="apply-button">Onayla</button>
-        <button @click="clearFilters" class="clear-button">Filtreleri Temizle</button>
       </div>
     </div>
-
-    <table class="ad-table">
-      <thead>
-        <tr>
-          <th colspan="2" class="model-header">Model</th>
-          <th>İlan Başlığı</th>
-          <th class="year-header" @click="setSort('year')">
-            <span>Yıl</span>
-          </th>
-          <th>Kilometre</th>
-          <th>Renk</th>
-          <th class="price-header" @click="setSort('price')">Fiyat</th>
-          <th class="date-header" @click="setSort('date')">Tarih</th>
-          <th>İl / İlçe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="ad in sortedAdverts" :key="ad.id" @click="goToDetail(ad.id)" class="ad-item">
-          <td><img :src="formatImageUrl(ad.photo)" alt="Araba Resmi" class="ad-image"></td>
-          <td class="left-align">{{ ad.modelName }}</td>
-          <td class="left-align">{{ ad.title }}</td>
-          <td>{{ getProperty(ad.properties, 'year') }}</td>
-          <td>{{ formatNumber(getProperty(ad.properties, 'km')) }}</td>
-          <td>{{ getProperty(ad.properties, 'color') }}</td>
-          <td class="price">{{ formatNumber(ad.price) }} ₺</td>
-          <td class="date">{{ ad.dateFormatted }}</td>
-          <td class="location">{{ getLocation(ad.location) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="list-table">
+      <table class="ad-table">
+        <thead>
+          <tr>
+            <th colspan="2" class="model-header">Model</th>
+            <th>İlan Başlığı</th>
+            <th class="year-header" @click="setSort('year')">
+              <span>Yıl</span>
+              <font-awesome-icon
+                :icon="getSortIcon('year')"
+                class="sort-icon"
+              />
+            </th>
+            <th>Kilometre</th>
+            <th>Renk</th>
+            <th class="price-header" @click="setSort('price')">
+              <span>Fiyat</span>
+              <font-awesome-icon
+                :icon="getSortIcon('price')"
+                class="sort-icon"
+              />
+            </th>
+            <th class="date-header" @click="setSort('date')">
+              <span>Tarih</span>
+              <font-awesome-icon
+                :icon="getSortIcon('date')"
+                class="sort-icon"
+              />
+            </th>
+            <th>İl / İlçe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="ad in sortedAdverts"
+            :key="ad.id"
+            @click="goToDetail(ad.id)"
+            class="ad-item"
+          >
+            <td>
+              <img
+                :src="formatImageUrl(ad.photo)"
+                alt="Araba Resmi"
+                class="ad-image"
+              />
+            </td>
+            <td class="left-align">{{ ad.modelName }}</td>
+            <td class="left-align">{{ ad.title }}</td>
+            <td>{{ getProperty(ad.properties, "year") }}</td>
+            <td>{{ formatNumber(getProperty(ad.properties, "km")) }}</td>
+            <td>{{ getProperty(ad.properties, "color") }}</td>
+            <td class="price">{{ formatNumber(ad.price) }} ₺</td>
+            <td class="date">{{ ad.dateFormatted }}</td>
+            <td class="location">{{ getLocation(ad.location) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
-import api from '../api';
+import api from "../api";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default {
+  components: {
+    FontAwesomeIcon,
+  },
   data() {
     return {
       adverts: [],
       selectedCount: 20,
-      sortType: 'date',
-      sortOrder: 'desc',
+      sortType: "date",
+      sortOrder: "desc",
       filters: {
-        minPrice: '',
-        maxPrice: '',
+        minPrice: "",
+        maxPrice: "",
         minYear: null,
         maxYear: null,
         minDate: null,
         maxDate: null,
       },
       tempFilters: {
-        minPrice: '',
-        maxPrice: '',
+        minPrice: "",
+        maxPrice: "",
         minYear: null,
         maxYear: null,
         minDate: null,
@@ -110,14 +175,16 @@ export default {
   },
   computed: {
     sortedAdverts() {
-      let filtered = this.adverts.filter(ad => {
+      let filtered = this.adverts.filter((ad) => {
         const price = this.parseFormattedNumber(ad.price);
-        const year = parseInt(this.getProperty(ad.properties, 'year'));
-        const date = new Date(ad.date.split('.').reverse().join('-'));
+        const year = parseInt(this.getProperty(ad.properties, "year"));
+        const date = new Date(ad.date.split(".").reverse().join("-"));
 
         return (
-          (!this.filters.minPrice || price >= this.parseFormattedNumber(this.filters.minPrice)) &&
-          (!this.filters.maxPrice || price <= this.parseFormattedNumber(this.filters.maxPrice)) &&
+          (!this.filters.minPrice ||
+            price >= this.parseFormattedNumber(this.filters.minPrice)) &&
+          (!this.filters.maxPrice ||
+            price <= this.parseFormattedNumber(this.filters.maxPrice)) &&
           (!this.filters.minYear || year >= this.filters.minYear) &&
           (!this.filters.maxYear || year <= this.filters.maxYear) &&
           (!this.filters.minDate || date >= new Date(this.filters.minDate)) &&
@@ -126,21 +193,21 @@ export default {
       });
 
       switch (this.sortType) {
-        case 'date':
+        case "date":
           filtered.sort(this.sortByDate);
           break;
-        case 'price':
+        case "price":
           filtered.sort(this.sortByPrice);
           break;
-        case 'year':
+        case "year":
           filtered.sort(this.sortByYear);
           break;
         default:
           break;
       }
 
-      return this.sortOrder === 'asc' ? filtered : filtered.reverse();
-    }
+      return this.sortOrder === "asc" ? filtered : filtered.reverse();
+    },
   },
   methods: {
     fetchListings() {
@@ -148,12 +215,13 @@ export default {
         take: this.selectedCount,
       };
 
-      api.getListings(params)
-        .then(response => {
+      api
+        .getListings(params)
+        .then((response) => {
           this.adverts = response.data;
         })
-        .catch(error => {
-          console.error('İlanlar alınırken hata oluştu:', error);
+        .catch((error) => {
+          console.error("İlanlar alınırken hata oluştu:", error);
         });
     },
     applyFilters() {
@@ -161,55 +229,66 @@ export default {
     },
     setSort(type) {
       if (this.sortType === type) {
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+        this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
       } else {
         this.sortType = type;
-        this.sortOrder = 'asc';
+        this.sortOrder = "asc";
       }
     },
+    getSortIcon(type) {
+      if (this.sortType === type) {
+        return this.sortOrder === "asc" ? "fa-sort-up" : "fa-sort-down";
+      }
+      return "fa-sort";
+    },
     goToDetail(id) {
-      this.$router.push({ name: 'DetailPage', params: { id } });
+      this.$router.push({ name: "DetailPage", params: { id } });
     },
     formatImageUrl(url) {
       if (url) {
-        return url.replace('{0}', '120x90');
+        return url.replace("{0}", "120x90");
       }
-      return '';
+      return "";
     },
     getProperty(properties, name) {
-      const property = properties.find(prop => prop.name === name);
-      return property ? property.value : '';
+      const property = properties.find((prop) => prop.name === name);
+      return property ? property.value : "";
     },
     getLocation(location) {
       if (!location) {
-        return '';
+        return "";
       }
       return `${location.cityName}\n${location.townName}`;
     },
     formatNumber(value) {
-      if (!value) return '';
-      return new Intl.NumberFormat('tr-TR').format(value);
+      if (!value) return "";
+      return new Intl.NumberFormat("tr-TR").format(value);
     },
     parseFormattedNumber(value) {
-      if (typeof value === 'string') {
-        return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+      if (typeof value === "string") {
+        return parseFloat(value.replace(/\./g, "").replace(",", "."));
       }
       return value;
     },
     sortByDate(a, b) {
-      const dateA = new Date(a.date.split('.').reverse().join('-'));
-      const dateB = new Date(b.date.split('.').reverse().join('-'));
+      const dateA = new Date(a.date.split(".").reverse().join("-"));
+      const dateB = new Date(b.date.split(".").reverse().join("-"));
       return dateA - dateB;
     },
     sortByPrice(a, b) {
-      return this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price);
+      return (
+        this.parseFormattedNumber(a.price) - this.parseFormattedNumber(b.price)
+      );
     },
     sortByYear(a, b) {
-      return this.getProperty(a.properties, 'year') - this.getProperty(b.properties, 'year');
+      return (
+        this.getProperty(a.properties, "year") -
+        this.getProperty(b.properties, "year")
+      );
     },
     formatPrice(field, event) {
-      let value = event.target.value.replace(/[^\d]/g, ''); // Sadece rakamları al
-      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Üçüncü basamaktan sonra nokta ekle
+      let value = event.target.value.replace(/[^\d]/g, ""); // Sadece rakamları al
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Üçüncü basamaktan sonra nokta ekle
       this.tempFilters[field] = value;
     },
     applyAndClose() {
@@ -219,8 +298,8 @@ export default {
     },
     clearFilters() {
       this.tempFilters = {
-        minPrice: '',
-        maxPrice: '',
+        minPrice: "",
+        maxPrice: "",
         minYear: null,
         maxYear: null,
         minDate: null,
@@ -228,11 +307,11 @@ export default {
       };
       this.filters = { ...this.tempFilters };
       this.applyFilters();
-    }
+    },
   },
   created() {
     this.fetchListings();
-  }
+  },
 };
 </script>
 
@@ -244,7 +323,8 @@ export default {
   background-color: #f7f7f7;
 }
 
-.filter, .filters {
+.filter,
+.filters {
   margin-bottom: 20px;
 }
 
@@ -267,6 +347,11 @@ export default {
   width: 100%;
 }
 
+.list-table {
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+}
+
 .ad-table {
   width: 100%;
   border-collapse: collapse;
@@ -274,9 +359,12 @@ export default {
 
 .ad-table th {
   background-color: #ffffff;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
 }
 
-.ad-table th, .ad-table td {
+.ad-table td {
   border: 1px solid #ffffff;
   padding: 10px;
   text-align: center;
@@ -291,7 +379,8 @@ export default {
   width: 150px;
   cursor: pointer;
 }
-.ad-table th.year-header, th.date-header {
+.ad-table th.year-header,
+th.date-header {
   cursor: pointer;
 }
 .ad-table th.year-header:hover {
@@ -303,19 +392,20 @@ export default {
 .ad-table th.date-header:hover {
   color: red;
 }
-.ad-table th.left-align, .ad-table td.left-align {
+.ad-table th.left-align,
+.ad-table td.left-align {
   text-align: left;
 }
 
 .ad-table th {
-  background-color: #f2f2f2;
-}
-
-.ad-item:nth-child(even) {
-  background-color: #f3f3f3;
+  background-color: #ffffff;
 }
 
 .ad-item:nth-child(odd) {
+  background-color: #f3f3f3;
+}
+
+.ad-item:nth-child(even) {
   background-color: #ffffff;
 }
 
@@ -377,8 +467,35 @@ export default {
   cursor: pointer;
 }
 
+.sub-title{
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+}
+
 .filter-button {
-  background-color: #4CAF50; /* Yeşil */
+  background-color:    #E40030; 
+  border: none;
+ color : white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  
+  cursor: pointer;
+  border-radius: 5px;
+}
+.filter-button:hover{
+  background-color: #c5f8c7;
+}
+
+.apply-button,
+.clear-button {
+  background-color: #4caf50; /* Yeşil */
   border: none;
   color: white;
   padding: 10px 20px;
@@ -390,16 +507,18 @@ export default {
   cursor: pointer;
 }
 
-.apply-button, .clear-button {
-  background-color: #4CAF50; /* Yeşil */
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
+.sort-icon {
+  margin-left: 0.5rem; /* Simgeler ile metin arasına boşluk ekler */
+}
+
+.title-container {
+  background-color: #ffffff; /* Arka plan rengi */
+  padding: 10px; /* İç boşluk */
+  border: 1px solid #ddd; /* Kenarlık */
+  border-radius: 5px; /* Kenarları yuvarlatma */
+  margin-bottom: 20px; /* Alt boşluk */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
