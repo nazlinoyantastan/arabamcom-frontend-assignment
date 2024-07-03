@@ -72,10 +72,12 @@
               <input type="date" id="maxDate" v-model="tempFilters.maxDate" />
             </div>
           </div>
+          <div class="modal-button">
           <button @click="applyAndClose" class="apply-button">Onayla</button>
           <button @click="clearFilters" class="clear-button">
             Filtreleri Temizle
           </button>
+        </div>
         </div>
       </div>
     </div>
@@ -454,6 +456,9 @@ th.date-header {
 }
 
 .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   color: #aaa;
   float: right;
   font-size: 28px;
@@ -490,12 +495,19 @@ th.date-header {
   border-radius: 5px;
 }
 .filter-button:hover{
-  background-color: #c5f8c7;
+  background-color:#C8002B;
+}
+.modal-button{
+  display:flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 .apply-button,
 .clear-button {
-  background-color: #4caf50; /* Yeşil */
+  background-color:  #E40030; 
   border: none;
   color: white;
   padding: 10px 20px;
@@ -505,6 +517,12 @@ th.date-header {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+ 
+}
+
+.apply-button:hover,
+.clear-button:hover{
+  background-color:#C8002B
 }
 
 .sort-icon {
