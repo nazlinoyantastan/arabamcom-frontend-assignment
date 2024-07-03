@@ -26,8 +26,9 @@
 
       <div v-if="showFilterModal" class="modal">
         <div class="modal-content">
+          <div>
           <span class="close" @click="showFilterModal = false">&times;</span>
-          <h2>Filtreler</h2>
+        </div>
           <div class="filters">
             <div>
               <label for="minPrice">Min Fiyat:</label>
@@ -332,7 +333,7 @@ export default {
 
 .filters {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -456,7 +457,7 @@ th.date-header {
 }
 
 .close {
-  position: absolute;
+  
   top: 10px;
   right: 10px;
   color: #aaa;
