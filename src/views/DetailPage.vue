@@ -53,7 +53,7 @@
               <li><strong>Model:</strong> {{ advert.modelName }}</li>
               <li v-for="(property, index) in customProperties" :key="index">
                 <strong>{{ property.name }}:</strong>
-                {{ getValueByKey(property.key) }}
+                {{ formatPropertyValue(property.key) }}
               </li>
             </ul>
           </div>
@@ -62,10 +62,9 @@
     </div>
     
     <div class="tab-content">
-      <div >
+      <div>
         <p v-html="advert?.text || 'Açıklama mevcut değil.'"></p>
       </div>
-      
     </div>
     <div v-if="fullscreenImage" class="fullscreen" @click="closeFullscreen">
       <img :src="fullscreenImage" />
@@ -161,6 +160,17 @@ export default {
     formatPrice(price) {
       return new Intl.NumberFormat("tr-TR").format(price);
     },
+    formatKilometers(km) {
+      if (!km) return "Bilinmiyor";
+      return parseInt(km).toLocaleString("tr-TR") + ' km';
+    },
+    formatPropertyValue(key) {
+      const value = this.getValueByKey(key);
+      if (key === "km") {
+        return this.formatKilometers(value);
+      }
+      return value;
+    },
   },
   created() {
     this.fetchDetail();
@@ -170,6 +180,10 @@ export default {
 
 <style scoped>
 /* Varsayılan stiller (masaüstü için) */
+body {
+  background-color: #f7f7f7;
+}
+
 .container {
   background-color: #f7f7f7;
   display: flex;
@@ -455,5 +469,3 @@ export default {
 }
 
 </style>
-
-

@@ -1,9 +1,7 @@
 <template>
   <div class="container">
     <div class="title-container">
-      Satılık 2. El Araba Fiyatları ve Modelleri ({{
-        sortedAdverts.length
-      }}
+      Satılık 2. El Araba Fiyatları ve Modelleri ({{ sortedAdverts.length }}
       Sonuç)
     </div>
 
@@ -27,8 +25,8 @@
       <div v-if="showFilterModal" class="modal">
         <div class="modal-content">
           <div>
-          <span class="close" @click="showFilterModal = false">&times;</span>
-        </div>
+            <span class="close" @click="showFilterModal = false">&times;</span>
+          </div>
           <div class="filters">
             <div>
               <label for="minPrice">Min Fiyat:</label>
@@ -74,11 +72,11 @@
             </div>
           </div>
           <div class="modal-button">
-          <button @click="applyAndClose" class="apply-button">Onayla</button>
-          <button @click="clearFilters" class="clear-button">
-            Filtreleri Temizle
-          </button>
-        </div>
+            <button @click="applyAndClose" class="apply-button">Onayla</button>
+            <button @click="clearFilters" class="clear-button">
+              Filtreleri Temizle
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -320,11 +318,19 @@ export default {
 
 <style scoped>
 /* Varsayılan stiller (masaüstü için) */
+body {
+  background-color: #f7f7f7;
+}
+
 .container {
   max-width: 1500px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f7f7f7;
+}
+.list-table {
+  border: 1px solid #dddddd !important;
+  border-radius: 5px;
 }
 
 .filter,
@@ -351,10 +357,7 @@ export default {
   width: 100%;
 }
 
-.list-table {
-  border: 1px solid #dddddd;
-  border-radius: 5px;
-}
+
 
 .ad-table {
   width: 100%;
@@ -473,33 +476,32 @@ th.date-header {
   cursor: pointer;
 }
 
-.sub-title{
+.sub-title {
   padding-left: 20px;
   padding-right: 20px;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-
 }
 
 .filter-button {
-  background-color:    #E40030; 
+  background-color: #e40030;
   border: none;
- color : white;
+  color: white;
   padding: 5px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  
+
   cursor: pointer;
   border-radius: 5px;
 }
-.filter-button:hover{
-  background-color:#C8002B;
+.filter-button:hover {
+  background-color: #c8002b;
 }
-.modal-button{
-  display:flex;
+.modal-button {
+  display: flex;
   flex-direction: column;
   align-items: stretch;
   flex-wrap: wrap;
@@ -508,7 +510,7 @@ th.date-header {
 
 .apply-button,
 .clear-button {
-  background-color:  #E40030; 
+  background-color: #e40030;
   border: none;
   color: white;
   padding: 10px 20px;
@@ -518,12 +520,11 @@ th.date-header {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
- 
 }
 
 .apply-button:hover,
-.clear-button:hover{
-  background-color:#C8002B
+.clear-button:hover {
+  background-color: #c8002b;
 }
 
 .sort-icon {
@@ -618,5 +619,4 @@ th.date-header {
     width: 90%;
   }
 }
-
 </style>

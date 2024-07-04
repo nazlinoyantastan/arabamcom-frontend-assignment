@@ -33,6 +33,7 @@ header {
   border-bottom: 1px solid #ddd;
 }
 
+
 .navbar {
   display: flex;
   justify-content: space-between;
