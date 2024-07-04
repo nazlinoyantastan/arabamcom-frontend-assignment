@@ -20,12 +20,13 @@
           <div class="car-details">
             <ul>
               <li><strong>Fiyat:</strong> <span class="price">{{ advert.price }} ₺</span></li>
+              <li><a href="https://www.arabam.com/oto-ekspertiz" class="expertise-btn" target="_blank">Ekspertiz teklifleri</a></li>
               <li><strong>İlan No:</strong> {{ advert.id }}</li>
               <li><strong>İlan Tarihi:</strong> {{ advert.dateFormatted }}</li>
-              <li><strong>Model:</strong> {{ advert.modelName }}</li>                           
-              <li v-for="(property, index) in advert.properties" :key="index">
-                <strong>{{ property.name }}:</strong> {{ property.value }}
-              </li>              
+              <li><strong>Model:</strong> {{ advert.modelName }}</li>                        
+              <li v-for="(property, index) in customProperties" :key="index">
+                <strong>{{ property.name }}:</strong> {{ getValueByKey(property.key) }}
+              </li>
             </ul>
           </div>
         </div>
@@ -74,6 +75,13 @@ export default {
       fullscreenImage: null,
       selectedTab: 'Açıklama',
       tabs: ['Açıklama', 'Satıcı Bilgileri'],
+      customProperties: [
+        { name: 'Kilometre', key: 'km' },
+        { name: 'Renk', key: 'color' },
+        { name: 'Yıl', key: 'year' },
+        { name: 'Vites', key: 'gear' },
+        { name: 'Yakıt', key: 'fuel' },
+      ]
     };
   },
   methods: {
@@ -108,6 +116,13 @@ export default {
       }
       return '';
     },
+    getValueByKey(key) {
+      if (this.advert && this.advert.properties) {
+        const property = this.advert.properties.find(prop => prop.name === key);
+        return property ? property.value : 'Bilinmiyor';
+      }
+      return 'Bilinmiyor';
+    }
   },
   created() {
     this.fetchDetail();
@@ -130,7 +145,7 @@ export default {
 }
 
 .main-content {
-  display: flex;
+  display: flex;  
   flex-wrap: wrap;
   width: 90%;
   margin: 20px 0;
@@ -138,6 +153,8 @@ export default {
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .title {
@@ -150,8 +167,8 @@ export default {
   padding-right: 20px;
 }
 
-.left-column h1 {
-  font-size: 24px;
+.left-column h5 {
+  font-size: 20px;
   margin-bottom: 10px;
 }
 
@@ -164,6 +181,7 @@ export default {
   border: none;
   height: 1px;
   background-color: #ccc;
+  margin-bottom: 20px;
 }
 
 .car-image-slider {
@@ -192,7 +210,21 @@ export default {
 }
 
 .price {
-  margin-top: 20px;
+  color: red;
+  font-weight: bold;
+}
+
+.expertise-btn {
+  background-color: #F2F2F2;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+.expertise-btn:hover{
+  background-color: #EBEBEB;
 }
 
 .tabs {
@@ -246,10 +278,4 @@ export default {
   margin-bottom: 100px;
   padding-top: 20px;
 }
-
-.price {
-  color: red;
-  font-weight: bold;
-}
-
 </style>
