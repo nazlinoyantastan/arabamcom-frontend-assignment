@@ -169,14 +169,13 @@ export default {
 </script>
 
 <style scoped>
-@import "swiper/swiper-bundle.css";
-
+/* Varsayılan stiller (masaüstü için) */
 .container {
   background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;  
+  width: 100%;
 }
 
 .detail-page {
@@ -209,7 +208,7 @@ export default {
 }
 
 .seller-info-btn {
-  padding: 10px 20px;
+  padding: 5px 10px;
   background-color: #e40030;
   color: white;
   border: none;
@@ -381,6 +380,80 @@ export default {
   text-decoration: none;
   cursor: pointer;
 }
+
+/* Küçük ekranlar için (mobil cihazlar) */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .title-detail {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .left-column {
+    padding-right: 0;
+  }
+
+  .right-column {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .tab-content {
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
+
+  .seller-info-btn,
+  .expertise-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+  }
+}
+
+/* Orta ekranlar için (tabletler) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-content {
+    width: 95%;
+  }
+
+  .title-detail {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .left-column {
+    padding-right: 0;
+  }
+
+  .right-column {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .tab-content {
+    width: 95%;
+  }
+
+  .modal-content {
+    width: 80%;
+  }
+
+  .seller-info-btn,
+  .expertise-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+  }
+}
+
 </style>
 
 

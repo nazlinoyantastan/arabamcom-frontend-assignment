@@ -319,6 +319,7 @@ export default {
 </script>
 
 <style scoped>
+/* Varsayılan stiller (masaüstü için) */
 .container {
   max-width: 1500px;
   margin: 0 auto;
@@ -457,7 +458,6 @@ th.date-header {
 }
 
 .close {
-  
   top: 10px;
   right: 10px;
   color: #aaa;
@@ -540,4 +540,83 @@ th.date-header {
   justify-content: space-between;
   align-items: center;
 }
+
+/* Küçük ekranlar için (mobil cihazlar) */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ad-table th,
+  .ad-table td {
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .ad-image {
+    width: 80px;
+  }
+
+  .title-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sub-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-button,
+  .apply-button,
+  .clear-button {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+}
+
+/* Orta ekranlar için (tabletler) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ad-table th,
+  .ad-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .ad-image {
+    width: 100px;
+  }
+
+  .title-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sub-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-button,
+  .apply-button,
+  .clear-button {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
+}
+
 </style>
