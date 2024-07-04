@@ -3,15 +3,32 @@
     <div class="detail-page" v-if="advert">
       <div class="main-content">
         <div class="title">
-          <h5>{{ advert.title }}</h5>
-          <p class="location">{{ getLocation(advert.location) }}</p>
+          <div class="title-detail">
+            <div>
+              <h5>{{ advert.title }}</h5>
+              <p class="location">{{ getLocation(advert.location) }}</p>
+            </div>
+            <div>
+              <button class="seller-info-btn" @click="showModal = true">
+                Satıcı Bilgileri
+              </button>
+            </div>
+          </div>
           <hr class="divider" />
         </div>
+
         <div class="left-column">
           <div class="car-image-slider">
             <swiper :slides-per-view="1" navigation pagination>
-              <swiper-slide v-for="(photo, index) in advert.photos" :key="index">
-                <img :src="formatImageUrl(photo)" @click="showFullscreen(formatImageUrl(photo))" alt="Car image" />
+              <swiper-slide
+                v-for="(photo, index) in advert.photos"
+                :key="index"
+              >
+                <img
+                  :src="formatImageUrl(photo)"
+                  @click="showFullscreen(formatImageUrl(photo))"
+                  alt="Car image"
+                />
               </swiper-slide>
             </swiper>
           </div>
@@ -19,48 +36,64 @@
         <div class="right-column">
           <div class="car-details">
             <ul>
-              <li><strong>Fiyat:</strong> <span class="price">{{ advert.price }} ₺</span></li>
-              <li><a href="https://www.arabam.com/oto-ekspertiz" class="expertise-btn" target="_blank">Ekspertiz teklifleri</a></li>
+              <li>
+                <strong>Fiyat:</strong>
+                <span class="price">{{ formatPrice(advert.price) }} ₺</span>
+              </li>
+              <li>
+                <a
+                  href="https://www.arabam.com/oto-ekspertiz"
+                  class="expertise-btn"
+                  target="_blank"
+                  >Ekspertiz teklifleri</a
+                >
+              </li>
               <li><strong>İlan No:</strong> {{ advert.id }}</li>
               <li><strong>İlan Tarihi:</strong> {{ advert.dateFormatted }}</li>
-              <li><strong>Model:</strong> {{ advert.modelName }}</li>                        
+              <li><strong>Model:</strong> {{ advert.modelName }}</li>
               <li v-for="(property, index) in customProperties" :key="index">
-                <strong>{{ property.name }}:</strong> {{ getValueByKey(property.key) }}
+                <strong>{{ property.name }}:</strong>
+                {{ getValueByKey(property.key) }}
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-    <div class="tabs">
-      <button v-for="tab in tabs" :key="tab" @click="selectedTab = tab" :class="{ active: selectedTab === tab }">
-        {{ tab }}
-      </button>
-    </div>
+    
     <div class="tab-content">
-      <div v-if="selectedTab === 'Açıklama'">
+      <div >
         <p v-html="advert?.text || 'Açıklama mevcut değil.'"></p>
       </div>
-      <div v-if="selectedTab === 'Satıcı Bilgileri'">
-        <div class="seller-info">
-          <ul>
-            <li><strong>Ad:</strong> {{ advert.userInfo?.nameSurname || 'Bilinmiyor' }}</li>
-            <li><strong>Telefon:</strong> {{ advert.userInfo?.phoneFormatted || 'Bilinmiyor' }}</li>
-          </ul>
-        </div>
-      </div>
+      
     </div>
     <div v-if="fullscreenImage" class="fullscreen" @click="closeFullscreen">
       <img :src="fullscreenImage" />
+    </div>
+
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <ul>
+          <li>
+            <strong>Ad:</strong>
+            {{ advert.userInfo?.nameSurname || "Bilinmiyor" }}
+          </li>
+          <li>
+            <strong>Telefon:</strong>
+            {{ advert.userInfo?.phoneFormatted || "Bilinmiyor" }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/swiper-bundle.css';
-import SwiperCore, { Navigation, Pagination } from 'swiper';
-import api from '../api';
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/swiper-bundle.css";
+import SwiperCore, { Navigation, Pagination } from "swiper";
+import api from "../api";
 
 SwiperCore.use([Navigation, Pagination]);
 
@@ -73,28 +106,28 @@ export default {
     return {
       advert: null,
       fullscreenImage: null,
-      selectedTab: 'Açıklama',
-      tabs: ['Açıklama', 'Satıcı Bilgileri'],
       customProperties: [
-        { name: 'Kilometre', key: 'km' },
-        { name: 'Renk', key: 'color' },
-        { name: 'Yıl', key: 'year' },
-        { name: 'Vites', key: 'gear' },
-        { name: 'Yakıt', key: 'fuel' },
-      ]
+        { name: "Kilometre", key: "km" },
+        { name: "Renk", key: "color" },
+        { name: "Yıl", key: "year" },
+        { name: "Vites", key: "gear" },
+        { name: "Yakıt", key: "fuel" },
+      ],
+      showModal: false,
     };
   },
   methods: {
     fetchDetail() {
       const id = this.$route.params.id;
-      api.getDetail(id)
-        .then(response => {
-          console.log('Fetched detail with id:', id);
-          console.log('API response data:', response.data);
+      api
+        .getDetail(id)
+        .then((response) => {
+          console.log("Fetched detail with id:", id);
+          console.log("API response data:", response.data);
           this.advert = response.data;
         })
-        .catch(error => {
-          console.error('Error fetching advert:', error);
+        .catch((error) => {
+          console.error("Error fetching advert:", error);
           this.advert = null; // Hata durumunda advert'i null olarak ayarlayın
         });
     },
@@ -106,23 +139,28 @@ export default {
     },
     getLocation(location) {
       if (!location) {
-        return '';
+        return "";
       }
       return `${location.cityName}, ${location.townName}`;
     },
     formatImageUrl(url) {
       if (url) {
-        return url.replace('{0}', '800x600'); // Change the placeholder with appropriate resolution
+        return url.replace("{0}", "800x600"); // Change the placeholder with appropriate resolution
       }
-      return '';
+      return "";
     },
     getValueByKey(key) {
       if (this.advert && this.advert.properties) {
-        const property = this.advert.properties.find(prop => prop.name === key);
-        return property ? property.value : 'Bilinmiyor';
+        const property = this.advert.properties.find(
+          (prop) => prop.name === key
+        );
+        return property ? property.value : "Bilinmiyor";
       }
-      return 'Bilinmiyor';
-    }
+      return "Bilinmiyor";
+    },
+    formatPrice(price) {
+      return new Intl.NumberFormat("tr-TR").format(price);
+    },
   },
   created() {
     this.fetchDetail();
@@ -131,10 +169,14 @@ export default {
 </script>
 
 <style scoped>
-@import 'swiper/swiper-bundle.css';
+@import "swiper/swiper-bundle.css";
 
 .container {
   background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;  
 }
 
 .detail-page {
@@ -145,7 +187,7 @@ export default {
 }
 
 .main-content {
-  display: flex;  
+  display: flex;
   flex-wrap: wrap;
   width: 90%;
   margin: 20px 0;
@@ -153,13 +195,30 @@ export default {
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  flex-wrap: wrap;
   align-items: stretch;
 }
 
 .title {
   width: 100%;
   margin-bottom: 20px;
+}
+
+.title-detail {
+  display: flex;
+  justify-content: space-between;
+}
+
+.seller-info-btn {
+  padding: 10px 20px;
+  background-color: #e40030;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.seller-info-btn:hover {
+  background-color: #c8002b;
 }
 
 .left-column {
@@ -215,7 +274,7 @@ export default {
 }
 
 .expertise-btn {
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   border: 1px solid #ccc;
   padding: 5px 10px;
   cursor: pointer;
@@ -223,8 +282,9 @@ export default {
   color: inherit;
   text-decoration: none;
 }
-.expertise-btn:hover{
-  background-color: #EBEBEB;
+
+.expertise-btn:hover {
+  background-color: #ebebeb;
 }
 
 .tabs {
@@ -248,10 +308,14 @@ export default {
 .tab-content {
   width: 90%;
   margin-top: 20px;
+  margin-bottom: 50px;
   padding: 20px;
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .fullscreen {
@@ -278,4 +342,45 @@ export default {
   margin-bottom: 100px;
   padding-top: 20px;
 }
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
 </style>
+
+
