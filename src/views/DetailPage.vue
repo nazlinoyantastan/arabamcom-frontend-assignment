@@ -21,12 +21,11 @@
             <ul>
               <li><strong>Fiyat:</strong> <span class="price">{{ advert.price }} ₺</span></li>
               <li><strong>İlan No:</strong> {{ advert.id }}</li>
-              <li><strong>Model:</strong> {{ advert.modelName }}</li>
-              <li><strong>İlan Tarihi:</strong> {{ advert.dateFormatted }}</li>             
+              <li><strong>İlan Tarihi:</strong> {{ advert.dateFormatted }}</li>
+              <li><strong>Model:</strong> {{ advert.modelName }}</li>                           
               <li v-for="(property, index) in advert.properties" :key="index">
                 <strong>{{ property.name }}:</strong> {{ property.value }}
-              </li>
-              
+              </li>              
             </ul>
           </div>
         </div>
