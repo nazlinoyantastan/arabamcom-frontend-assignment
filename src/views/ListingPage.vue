@@ -15,7 +15,7 @@
         >
           <option value="20">20</option>
           <option value="50">50</option>
-          <option value="100">100</option>
+          <option value="100"></option>
         </select>
       </div>
 
@@ -172,7 +172,7 @@ export default {
         minDate: null,
         maxDate: null,
       },
-      showFilterModal: false, // Modal başlangıçta gizli
+      showFilterModal: false, 
     };
   },
   computed: {
@@ -227,7 +227,7 @@ export default {
         });
     },
     applyFilters() {
-      this.$forceUpdate(); // computed property'i tetiklemek için
+      this.$forceUpdate(); 
     },
     setSort(type) {
       if (this.sortType === type) {
@@ -289,8 +289,8 @@ export default {
       );
     },
     formatPrice(field, event) {
-      let value = event.target.value.replace(/[^\d]/g, ""); // Sadece rakamları al
-      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Üçüncü basamaktan sonra nokta ekle
+      let value = event.target.value.replace(/[^\d]/g, ""); 
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, "."); 
       this.tempFilters[field] = value;
     },
     applyAndClose() {
@@ -444,7 +444,7 @@ th.date-header {
   align-items: center;
   justify-content: center;
   position: fixed;
-  z-index: 1000; /* Daha yüksek bir değer kullanarak diğer elementlerin üzerinde olmasını sağlayın */
+  z-index: 1000; 
   left: 0;
   top: 0;
   width: 100%;
@@ -529,15 +529,15 @@ th.date-header {
 }
 
 .sort-icon {
-  margin-left: 0.5rem; /* Simgeler ile metin arasına boşluk ekler */
+  margin-left: 0.5rem; 
 }
 
 .title-container {
-  background-color: #ffffff; /* Arka plan rengi */
-  padding: 10px; /* İç boşluk */
-  border: 1px solid #ddd; /* Kenarlık */
-  border-radius: 5px; /* Kenarları yuvarlatma */
-  margin-bottom: 20px; /* Alt boşluk */
+  background-color: #ffffff; 
+  padding: 10px; 
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  margin-bottom: 20px; 
   display: flex;
   justify-content: space-between;
   align-items: center;

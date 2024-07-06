@@ -144,7 +144,7 @@ export default {
     },
     formatImageUrl(url) {
       if (url) {
-        return url.replace("{0}", "800x600"); // Change the placeholder with appropriate resolution
+        return url.replace("{0}", "800x600"); 
       }
       return "";
     },

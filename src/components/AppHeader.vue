@@ -57,13 +57,13 @@ header {
 .navbar-logo {
   max-height: 40px;
   width: auto;
-  margin-right: 1rem; /* Logo ile arama kutusu arasına boşluk ekle */
+  margin-right: 1rem; 
 }
 
 .navbar-search {
   display: flex;
   flex-grow: 1;
-  max-width: 600px; /* Arama kutusunun maksimum genişliğini artırdık */
+  max-width: 600px; 
 }
 
 .search-input {
@@ -72,7 +72,7 @@ header {
   border: 1px solid #ddd;
   border-right: none;
   background: #F0F0F0;
-  min-width: 300px; /* Arama kutusunun minimum genişliğini belirleyin */
+  min-width: 300px; 
 }
 
 .search-button {
